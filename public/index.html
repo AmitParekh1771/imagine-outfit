@@ -5,8 +5,146 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Imagine Outfit</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <h1>hello world</h1>
+<body class="bg-gray-100 dark:bg-gray-900 flex items-stretch min-h-screen relative">
+
+    <!-- section -->
+    <section class="hidden min-h-screen sticky left-0 top-0 z-30 bg-gray-200 dark:bg-gray-700 h-full p-8 w-72 overflow-y-auto">
+        <button class="px-4 py-2 bg-blue-500 text-white rounded-md mb-4">Start New Chat</button>
+        <div class="space-y-4">
+            <div class="border-b pb-2">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-semibold">Chat Prompt Title</h3>
+                    <div class="space-x-2">
+                        <button class="text-gray-600 hover:text-blue-500" title="Delete">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                        <button class="text-gray-600 hover:text-blue-500" title="Duplicate">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                        <button class="text-gray-600 hover:text-blue-500" title="Edit Title">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Repeat for more chat prompt items -->
+        </div>
+        <div class="mt-8">
+            <a href="#" class="text-blue-500 hover:underline">Account</a>
+        </div>
+    </section>
+    <!-- section -->
+    
+    <!-- section -->
+    <section class="flex-grow min-h-screen relative flex flex-col">
+        <div class="px-[5%] flex-grow relative">
+            <div class="max-w-screen-lg mx-auto py-4">
+                <div class="flex justify-end">
+                    <label for="darkModeToggle" class="flex gap-2 items-center cursor-pointer" title="Toggle theme">
+                        <div class="relative w-10 h-6 rounded-full bg-gray-300 dark:bg-gray-700">
+                            <input type="checkbox" id="darkModeToggle" class="hidden">
+                            <div id="toggleIndicator" class="absolute inset-1 w-4 h-4 transform translate-x-0 bg-white dark:bg-gray-400 rounded-full transition-transform duration-300 ease-in-out"></div>
+                        </div>
+                    </label>
+                </div>
+                
+                <div id="product-list" class="flex gap-4 mt-8 flex-wrap justify-center">
+                    <!-- Product Cards -->
+                    <!-- <div data-product="" class="bg-white dark:bg-gray-800 p-4 max-w-[240px] w-full rounded shadow-md">
+                        <img data-property="product-image" src="" alt="Product 1" class="w-full h-56 object-cover mb-2">
+                        <h3 data-property="product-title" class="text-gray-800 dark:text-gray-200 font-semibold">Product Title</h3>
+                        <p class="flex gap-2 text-green-600 dark:text-green-400 font-medium"><span data-property="product-mrp">$99.99</span><span data-property="product-original-mrp" class="text-gray-500 line-through">$129.99</span></p>
+                        <p data-property="product-discount-percentage" class="text-sm text-gray-500 dark:text-gray-400">Save 23%</p>
+                    </div> -->
+                    <!-- Repeat for other product cards -->
+                </div>
+            </div>
+        </div>
+    
+        <div class="px-[5%] sticky bottom-0 left-0 z-30 w-full bg-gradient-to-b from-transparent via-gray-200 dark:via-gray-800 to-gray-200 dark:to-gray-800">
+            <div class="max-w-screen-md mx-auto flex items-end space-x-2 pb-8 pt-16">
+                <textarea id="promptBox" class="flex-grow p-3 rounded bg-white dark:bg-gray-600 resize-none max-h-[208px] overflow-y-auto" rows="1" placeholder="Type your message..."></textarea>
+                <button class="p-3 text-white bg-blue-500 rounded">Send</button>
+            </div>
+        </div>
+    </section>
+    <!-- section -->
+
+    <!-- section -->
+    <section class="min-h-screen sticky right-0 top-0 z-30 h-full bg-gray-200 dark:bg-gray-700 p-8 w-72">
+        <h2 class="text-lg font-semibold mb-4 dark:text-gray-300">Preferences</h2>
+        <form class="space-y-4">
+            <div>
+                <label for="gender" class="block text-xs font-medium text-gray-700 dark:text-gray-300">Gender</label>
+                <select id="gender" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm">
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                </select>
+            </div>
+            <div>
+                <label for="age" class="block text-xs font-medium text-gray-700 dark:text-gray-300">Age</label>
+                <input type="text" id="age" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm">
+            </div>
+            <div>
+                <label for="occasion" class="block text-xs font-medium text-gray-700 dark:text-gray-300">Occasion</label>
+                <select id="occasion" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm">
+                    <option>Casual</option>
+                    <option>Lounge Wear</option>
+                    <option>Festive</option>
+                    <option>Beach Wear</option>
+                    <option>Party</option>
+                    <option>Sports</option>
+                    <option>Formal</option>
+                    <option>Any</option>
+                </select>
+            </div>
+            <div>
+                <label for="location" class="block text-xs font-medium text-gray-700 dark:text-gray-300">Location</label>
+                <input type="text" id="location" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm">
+            </div>
+            <div>
+                <label for="color" class="block text-xs font-medium text-gray-700 dark:text-gray-300">Preferred Color</label>
+                <select id="color" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm">
+                    <option>White</option>
+                    <option>Black</option>
+                    <option>Yellow</option>
+                    <option>Red</option>
+                    <option>Blue</option>
+                    <option>Green</option>
+                    <option>Any</option>
+                </select>
+            </div>
+            <div>
+                <label for="pattern" class="block text-xs font-medium text-gray-700 dark:text-gray-300">Preferred Pattern</label>
+                <select id="pattern" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm">
+                    <option>Stripes</option>
+                    <option>Polka Dots</option>
+                    <option>Floral</option>
+                    <option>Any</option>
+                </select>
+            </div>
+        </form>
+    </section>
+    <!-- section -->
+
+    <!-- loader -->
+    <div class="fixed inset-0 flex flex-col items-center justify-center z-50 bg-gray-200 bg-opacity-50" id="loader">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mb-4"></div>
+        <div id="loader-text" class="text-sm text-gray-700 dark:text-gray-300">Loading...</div>
+        <div class="hidden"></div>
+    </div>
+    <!-- loader  -->
+
+    <script src="main.js" async></script>
 </body>
 </html>
