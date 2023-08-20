@@ -5,41 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Imagine Outfit</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 flex items-stretch min-h-screen relative">
+<body class="bg-gray-100 dark:bg-gray-900 flex items-stretch min-h-screen relative overflow-y-scroll">
 
     <!-- section -->
-    <section class="hidden min-h-screen sticky left-0 top-0 z-30 bg-gray-200 dark:bg-gray-700 h-full p-8 w-72 overflow-y-auto">
-        <button class="px-4 py-2 bg-blue-500 text-white rounded-md mb-4">Start New Chat</button>
-        <div class="space-y-4">
-            <div class="border-b pb-2">
-                <div class="flex justify-between items-center">
-                    <h3 class="font-semibold">Chat Prompt Title</h3>
-                    <div class="space-x-2">
-                        <button class="text-gray-600 hover:text-blue-500" title="Delete">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                        <button class="text-gray-600 hover:text-blue-500" title="Duplicate">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                        <button class="text-gray-600 hover:text-blue-500" title="Edit Title">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                    </div>
+    <section class="min-h-screen sticky left-0 top-0 z-30 bg-gray-200 dark:bg-gray-700 h-full p-8 w-72 overflow-y-auto">
+        <button id="add-chat-btn" class="p-3 bg-blue-500 text-white rounded-md mb-4 w-full">New Chat</button>
+        <div id="chatHistory" class="space-y-4">
+            <!-- <div data-chat=""  class="p-3 rounded-md mb-2 hover:bg-gray-300 cursor-pointer">
+                <div class="flex justify-between items-center gap-1">
+                    <h3 class="font-semibold whitespace-nowrap overflow-hidden text-ellipsis">Chat Prompt Title Prompt Title</h3>
+                    <button data-chatDelete="" class="text-gray-600 hover:text-blue-500" title="Edit Title">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
                 </div>
-            </div>
+            </div> -->
             <!-- Repeat for more chat prompt items -->
-        </div>
-        <div class="mt-8">
-            <a href="#" class="text-blue-500 hover:underline">Account</a>
         </div>
     </section>
     <!-- section -->
@@ -48,7 +34,17 @@
     <section class="flex-grow min-h-screen relative flex flex-col">
         <div class="px-[5%] flex-grow relative">
             <div class="max-w-screen-lg mx-auto py-4">
-                <div class="flex justify-end">
+                <div class="flex justify-between">
+                    <div class="flex items-center gap-4">
+                        <h1 id="pageTitle" contenteditable="true" class="text-xl outline-none font-bold text-gray-700 dark:text-gray-200"></h1>
+                        <div id="loader" class="flex items-center gap-2" role="status">
+                            <svg aria-hidden="true" class="w-6 h-6 text-gray-200 animate-spin dark:text-gray-700 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                            </svg>
+                            <span id="loader-text" class="text-sm text-gray-700 dark:text-gray-200">Loading...</span>
+                        </div>
+                    </div>
                     <label for="darkModeToggle" class="flex gap-2 items-center cursor-pointer" title="Toggle theme">
                         <div class="relative w-10 h-6 rounded-full bg-gray-300 dark:bg-gray-700">
                             <input type="checkbox" id="darkModeToggle" class="hidden">
@@ -67,13 +63,21 @@
                     </div> -->
                     <!-- Repeat for other product cards -->
                 </div>
+
+                <div id="starter" class="py-20 text-lg opacity-75 text-gray-700 dark:text-gray-100 max-w-lg mx-auto">
+                    <div class="mb-2 bg-gray-200 dark:bg-gray-800 rounded-md p-3"><strong>Step 1:</strong> Give your page a beautiful name (Click & Edit) 💫</div>
+                    <div class="mb-2 bg-gray-200 dark:bg-gray-800 rounded-md p-3"><strong>Step 2:</strong> Choose your outfit preferences and Hit "Apply Changes" 🚀</div>
+                    <div class="mb-2 bg-gray-200 dark:bg-gray-800 rounded-md p-3"><strong>Step 3:</strong> Use textbox to chat with AI and modify outfits the way you want 💪</div>
+                    <div class="mb-2 bg-gray-200 dark:bg-gray-800 rounded-md p-3"><strong>Step 4:</strong> Click and Buy your favourite outfits 🛒</div>
+                    <div class="mb-2 bg-gray-200 dark:bg-gray-800 rounded-md p-3"><strong>Step 5:</strong> Manage your outfit history like a pro 🎓</div>
+                </div>
             </div>
         </div>
     
         <div class="px-[5%] sticky bottom-0 left-0 z-30 w-full bg-gradient-to-b from-transparent via-gray-200 dark:via-gray-800 to-gray-200 dark:to-gray-800">
             <div class="max-w-screen-md mx-auto flex items-end space-x-2 pb-8 pt-16">
                 <textarea id="promptBox" class="flex-grow p-3 rounded bg-white dark:bg-gray-600 resize-none max-h-[208px] overflow-y-auto" rows="1" placeholder="Type your message..."></textarea>
-                <button class="p-3 text-white bg-blue-500 rounded">Send</button>
+                <button id="promptSendBtn" class="p-3 text-white bg-blue-500 rounded">Send</button>
             </div>
         </div>
     </section>
@@ -133,17 +137,13 @@
                     <option>Any</option>
                 </select>
             </div>
+            <div>
+                <button id="preferenceBtn" class="mt-4 p-3 text-white bg-blue-500 rounded w-full text-center">Apply Changes</button>
+            </div>
         </form>
     </section>
     <!-- section -->
 
-    <!-- loader -->
-    <div class="fixed inset-0 flex flex-col items-center justify-center z-50 bg-gray-200 bg-opacity-50" id="loader">
-        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mb-4"></div>
-        <div id="loader-text" class="text-sm text-gray-700 dark:text-gray-300">Loading...</div>
-        <div class="hidden"></div>
-    </div>
-    <!-- loader  -->
 
     <script src="main.js" async></script>
 </body>
