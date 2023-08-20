@@ -230,15 +230,14 @@ const addPage = async (title = "My Outfit") => {
     const pageStamp = Date.now();
     chatHistory.insertAdjacentHTML("afterbegin", chatCard(title, pageStamp));
 
-    localDB.currPageStamp = pageStamp;
     localDB.pages.splice(0, 0, {
         title,
         pageStamp,
         currentDisplayedOutfits: [],
         currentOutfits: []
     })
-
-    pageChange(localDB.currPageStamp);
+    
+    pageChange(pageStamp);
 
     productList.innerHTML = '';
     starter.classList.remove('hidden');
