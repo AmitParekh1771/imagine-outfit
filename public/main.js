@@ -20,19 +20,33 @@ darkModeToggle.addEventListener('change', toggler);
 darkModeToggle.checked = localStorage.getItem('isDarkMode') == 'true';
 toggler();
 
+const overlay = document.getElementById('overlay');
 const menu = document.getElementById('menu');
-document.getElementById('openMenuBtn').addEventListener('click', (ev) => {
+const openMenu = () => {
     menu.classList.add('translate-x-[0%]');
-});
-document.getElementById('closeMenuBtn').addEventListener('click', (ev) => {
+    overlay.classList.remove('hidden');
+}
+const closeMenu = () => {
     menu.classList.remove('translate-x-[0%]');
-});
+    overlay.classList.add('hidden');
+}
+document.getElementById('openMenuBtn').addEventListener('click', openMenu);
+document.getElementById('closeMenuBtn').addEventListener('click', closeMenu);
+
 const preference = document.getElementById('preference');
-document.getElementById('openPreferenceBtn').addEventListener('click', (ev) => {
+const openPreference = () => {
     preference.classList.add('translate-x-[0%]');
-});
-document.getElementById('closePreferenceBtn').addEventListener('click', (ev) => {
+    overlay.classList.remove('hidden');
+}
+const closePreference = () => {
     preference.classList.remove('translate-x-[0%]');
+    overlay.classList.add('hidden');
+}
+document.getElementById('openPreferenceBtn').addEventListener('click', openPreference);
+document.getElementById('closePreferenceBtn').addEventListener('click', closePreference);
+overlay.addEventListener('click', (ev) => {
+    closeMenu();
+    closePreference();
 });
 
 const textarea = document.getElementById("promptBox");
@@ -52,19 +66,12 @@ const locationRef = document.getElementById('location');
 const colorRef = document.getElementById('color');
 const patternRef = document.getElementById('pattern');
 
-genderRef.value = 'Male';
-ageRef.value = '21';
-occasionRef.value = 'Casual';
-locationRef.value = 'Surat';
-colorRef.value = 'White';
-patternRef.value = 'Stripes';
-
 let currentOutfits = [];
 
 const productList = document.getElementById('product-list');
 
 const productCard = (product) => {
-    return `<div data-product="${product.pid}" class="relative bg-white dark:bg-gray-800 p-4 max-w-[240px] w-full rounded shadow-md group"><span data-property="product-category" class="absolute top-1 left-1 px-2 py-1 text-xs font-medium rounded bg-blue-500 text-white">${product.category}</span><button data-btn="${product.pid}" class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition duration-300 p-1 text-gray-800 dark:text-gray-200"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button><a href="${product.productLink}" target="_blank"><img data-property="product-image" src="${product.img}" alt="${product.category}" class="w-full h-56 object-contain mb-2"></a><h3 data-property="product-title" class="text-gray-800 dark:text-gray-200 font-semibold break-words"><a href="${product.productLink}" target="_blank">${product.title}</a></h3><p class="flex gap-2 text-green-600 dark:text-green-400 font-medium"><span data-property="product-mrp">${product.mrp}</span><span data-property="product-original-mrp" class="text-gray-500 line-through">${product.originalMrp}</span></p><p data-property="product-discount-percentage" class="text-sm text-gray-500 dark:text-gray-400">${product.discountPercentage}</p></div>`;
+    return `<div data-product="${product.pid}" class="relative bg-white dark:bg-gray-800 p-4 max-w-[240px] w-full rounded shadow-md"><span data-property="product-category" class="absolute top-1 left-1 px-2 py-1 text-xs font-medium rounded bg-blue-500 text-white">${product.category}</span><button data-btn="${product.pid}" class="absolute top-1 right-1 transition duration-300 p-1 text-gray-800 dark:text-gray-200"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button><a href="${product.productLink}" target="_blank"><img data-property="product-image" src="${product.img}" alt="${product.category}" class="w-full h-56 object-contain mb-2"></a><h3 data-property="product-title" class="text-gray-800 dark:text-gray-200 font-semibold break-words"><a href="${product.productLink}" target="_blank">${product.title}</a></h3><p class="flex gap-2 text-green-600 dark:text-green-400 font-medium"><span data-property="product-mrp">${product.mrp}</span><span data-property="product-original-mrp" class="text-gray-500 line-through">${product.originalMrp}</span></p><p data-property="product-discount-percentage" class="text-sm text-gray-500 dark:text-gray-400">${product.discountPercentage}</p></div>`;
 }
 
 const getProduct = async (item) => {
@@ -127,7 +134,7 @@ const promptSendBtn = document.getElementById('promptSendBtn');
 const sendPrompt = async () => {
     loader.classList.remove('hidden');
     
-    loaderText.innerText = 'Modifying fashion outfit items...';
+    loaderText.innerText = 'Processing your request...';
 
     const response = await fetch('/openai/outfit-prompt', {
         method: 'POST',
@@ -150,6 +157,8 @@ const sendPrompt = async () => {
     const data = await response.json();
     console.log(data);
     
+    starter.classList.add('hidden');
+
     for(let item of data.items) {
         const product = await getProduct(item);
         currentOutfits.push(product);
@@ -197,6 +206,7 @@ const preferenceBtn = document.getElementById('preferenceBtn');
 preferenceBtn.addEventListener('click', (ev) => {
     ev.preventDefault();
     getOutfits();
+    closePreference();
 });
 
 const chatCard = (chatTitle, pageStamp) => {
@@ -212,10 +222,17 @@ const loadPage = (page) => {
     
     page.currentOutfits?.length ? starter.classList.add('hidden') : starter.classList.remove('hidden'); 
 
-    currentOutfits = JSON.parse(JSON.stringify(page.currentOutfits));
+    currentOutfits = JSON.parse(JSON.stringify(page.currentOutfits || []));
+    const preferences = JSON.parse(JSON.stringify(page.preferences || { age: '21', gender: 'Male', occasion: 'Casual', location: 'Surat', color: 'White', pattern: 'Stripes' }));
+    ageRef.value = preferences.age;
+    genderRef.value = preferences.gender;
+    occasionRef.value = preferences.occasion;
+    locationRef.value = preferences.location;
+    colorRef.value = preferences.color;
+    patternRef.value = preferences.pattern;
     
     for(let item of page.currentOutfits)
-        productList.insertAdjacentHTML("beforeend", productCard(item));
+        productList.insertAdjacentHTML("afterbegin", productCard(item));
 }
 
 const loadChats = () => {
@@ -224,8 +241,17 @@ const loadChats = () => {
 
 const saveOutfitData = () => {
     const pageIndex = localDB.pages.findIndex(page => page.pageStamp == localDB.currPageStamp);
-    if(pageIndex != -1)
+    if(pageIndex != -1) {
         localDB.pages[pageIndex].currentOutfits = JSON.parse(JSON.stringify(currentOutfits));
+        localDB.pages[pageIndex].preferences = JSON.parse(JSON.stringify({
+            age: ageRef.value,
+            gender: genderRef.value,
+            occasion: occasionRef.value,
+            location: locationRef.value,
+            color: colorRef.value,
+            pattern: patternRef.value
+        }));
+    }
 }
 
 
@@ -240,6 +266,8 @@ const pageChange = (pageStamp) => {
     for(let chat of chats) {
         chat.getAttribute('data-chat') == `${pageStamp}` ? chat.classList.add('bg-gray-300','dark:bg-gray-800') : chat.classList.remove('bg-gray-300','dark:bg-gray-800');
     }
+
+    closeMenu();
 }
 
 const addPage = async (title = "My Outfit") => {
