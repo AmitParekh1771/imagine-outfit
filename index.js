@@ -48,21 +48,22 @@ app.get('/flipkart', async (req, res) => {
     const product = await productResponse.text();
     const product$ = load(product);
     
+    const pid = new URL(productLink).searchParams.get('pid');
     const img = product$('._1YokD2._2GoDe3').find('img').attr('src')?.replace(/\/128\/128\//g, '/512/512/');
     const title = product$('._1YokD2._2GoDe3').find('.B_NuCI').text();
     const mrp = product$('._1YokD2._2GoDe3').find('._30jeq3._16Jk6d').text();
     const originalMrp = product$('._1YokD2._2GoDe3').find('._3I9_wc._2p6lqe').text();
     const discountPercentage = product$('._1YokD2._2GoDe3').find('._3Ay6Sb._31Dcoz.pZkvcx').text();
 
-    res.send({ img, title, mrp, originalMrp, discountPercentage, productLink });
+    res.send({ pid, img, title, mrp, originalMrp, discountPercentage, productLink });
 });
 
 app.post('/openai/outfits', async (req, res) => {
     const { preferences } = req.body;
 
-    const prompt = `Consider a person with age ${preferences.age} and gender ${preferences.gender} living in ${preferences.location}. This person mostly likes ${preferences.color} color and ${preferences.pattern} pattern outfit for ${preferences.occasion} occasion.\n\nCreate a complete outfit set for the given preferences. Set should contain detailed search query of each item (considering all preferences strictly) and distinct category (append sub-category) that differentiate items from each other (no two item should have same category in the output list).\n\nIMPORTANT: Only return javascript array containing item of type { search: string, category: string } and enclose it with HTML pre tag.\n\nIMPORTANT: Output must be JSON parseabe.`;
+    const prompt = `Consider a person with age ${preferences.age} and gender ${preferences.gender} living in ${preferences.location}. This person mostly likes ${preferences.color} color and ${preferences.pattern} pattern outfit for ${preferences.occasion} occasion.\n\nCreate a complete outfit set for the given preferences. For each item in the recommended set provide long, detailed and very precise searchable query that can be used to web search that item and category which that item belongs to.\n\nIMPORTANT: Only return javascript array containing item of type { search: string, category: string } and enclose it with HTML pre tag.\n\nIMPORTANT: Output must be JSON parseabe.`;
 
-    console.log('...Prompt...', prompt);
+    console.log('\n...Prompt...\n', prompt);
     console.log('\n');
 
     const completion = await openai.chat.completions.create({
@@ -81,9 +82,9 @@ app.post('/openai/outfits', async (req, res) => {
 app.post('/openai/outfit-prompt', async (req, res) => {
     const { preferences, currentOutfits, prompt } = req.body;
     
-    const wrapperPrompt = `Consider a person with age ${preferences.age} and gender ${preferences.gender} living in ${preferences.location}. Given the user's current outfits:\n${JSON.stringify(currentOutfits)}\n\nAbove outfit list contain detailed search query for each items and category that differentiate items from each other. User has provided a prompt to apply some changes to the above list. \n\nThe prompt is \"${prompt}\". Modify outfit list based on user prompt such that set should contain detailed search query of each item (considering user persona strictly), distinct category (append sub-category) that differentiate items from each other (no two item should have same category in the output list) and status denoting if item is added(value 2), removed(value -1), modified(value 1) or unmodified(value 0). If item removal is needed, don't hard delete from the list, instead set status to -1 indicating soft delete.\n\nIMPORTANT: Only return javascript array containing item of type { search: string, category: string, status: number } and enclose it with HTML pre tag.\n\nIMPORTANT: Output must be JSON parseabe.`;
+    const wrapperPrompt = `Consider a person with age ${preferences.age} and gender ${preferences.gender} living in ${preferences.location}. This person mostly likes ${preferences.color} color and ${preferences.pattern} pattern outfit for ${preferences.occasion} occasion. The current outfit of the user includes:\n${currentOutfits.map(item => `${item.title} - ${item.mrp}`).join('\n')}.\n\nUser has provided a prompt to apply some changes to the above list. \n\nThe prompt is \"${prompt}\"\n\n. Suggest appropriate outfit items that satisfies user prompt (at highest priority) and matches the current outfit of the user. For each item recommended should contain long, detailed and very precise searchable query that can be used to web search that item and category which that item belongs to.\n\nIMPORTANT: Only return javascript array containing item of type { search: string, category: string } and enclose it with HTML pre tag.\n\nIMPORTANT: Output must be JSON parseabe.`;
 
-    console.log('...Prompt...', wrapperPrompt);
+    console.log('\n...Prompt...\n', wrapperPrompt);
     console.log('\n');
 
     const completion = await openai.chat.completions.create({
