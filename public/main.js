@@ -20,6 +20,21 @@ darkModeToggle.addEventListener('change', toggler);
 darkModeToggle.checked = localStorage.getItem('isDarkMode') == 'true';
 toggler();
 
+const menu = document.getElementById('menu');
+document.getElementById('openMenuBtn').addEventListener('click', (ev) => {
+    menu.classList.add('translate-x-[0%]');
+});
+document.getElementById('closeMenuBtn').addEventListener('click', (ev) => {
+    menu.classList.remove('translate-x-[0%]');
+});
+const preference = document.getElementById('preference');
+document.getElementById('openPreferenceBtn').addEventListener('click', (ev) => {
+    preference.classList.add('translate-x-[0%]');
+});
+document.getElementById('closePreferenceBtn').addEventListener('click', (ev) => {
+    preference.classList.remove('translate-x-[0%]');
+});
+
 const textarea = document.getElementById("promptBox");
 textarea.addEventListener('input', (ev) => {
     textarea.style.height = 'auto';
@@ -45,12 +60,11 @@ colorRef.value = 'White';
 patternRef.value = 'Stripes';
 
 let currentOutfits = [];
-let currentDisplayedOutfits = [];
 
 const productList = document.getElementById('product-list');
 
-const productCard = (product, category) => {
-    return `<div data-product="${category}" class="bg-white dark:bg-gray-800 p-4 max-w-[240px] w-full rounded shadow-md"><a href="${product.productLink}" target="_blank"><img data-property="product-image" src="${product.img}" alt="${category}" class="w-full h-56 object-contain mb-2"></a><h3 data-property="product-title" class="text-gray-800 dark:text-gray-200 font-semibold break-words"><a href="${product.productLink}" target="_blank">${product.title}</a></h3><p class="flex gap-2 text-green-600 dark:text-green-400 font-medium"><span data-property="product-mrp">${product.mrp}</span><span data-property="product-original-mrp" class="text-gray-500 line-through">${product.originalMrp}</span></p><p data-property="product-discount-percentage" class="text-sm text-gray-500 dark:text-gray-400">${product.discountPercentage}</p></div>`;
+const productCard = (product) => {
+    return `<div data-product="${product.pid}" class="relative bg-white dark:bg-gray-800 p-4 max-w-[240px] w-full rounded shadow-md group"><span data-property="product-category" class="absolute top-1 left-1 px-2 py-1 text-xs font-medium rounded bg-blue-500 text-white">${product.category}</span><button data-btn="${product.pid}" class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition duration-300 p-1 text-gray-800 dark:text-gray-200"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button><a href="${product.productLink}" target="_blank"><img data-property="product-image" src="${product.img}" alt="${product.category}" class="w-full h-56 object-contain mb-2"></a><h3 data-property="product-title" class="text-gray-800 dark:text-gray-200 font-semibold break-words"><a href="${product.productLink}" target="_blank">${product.title}</a></h3><p class="flex gap-2 text-green-600 dark:text-green-400 font-medium"><span data-property="product-mrp">${product.mrp}</span><span data-property="product-original-mrp" class="text-gray-500 line-through">${product.originalMrp}</span></p><p data-property="product-discount-percentage" class="text-sm text-gray-500 dark:text-gray-400">${product.discountPercentage}</p></div>`;
 }
 
 const getProduct = async (item) => {
@@ -59,19 +73,13 @@ const getProduct = async (item) => {
     const response = await fetch(`/flipkart?search=${encodeURI(item.search)}`);
     const data = await response.json();
     
+    const product = { ...data, category: item.category };
 
-    const currentProduct = document.querySelector(`[data-product="${item.category}"]`);
+    productList.insertAdjacentHTML("afterbegin", productCard(product));
 
-    if(currentProduct) {
-        currentProduct.insertAdjacentHTML("afterend", productCard(data, item.category));
-        productList.removeChild(currentProduct);
-    }
-    else productList.insertAdjacentHTML("beforeend", productCard(data, item.category));
+    console.log(product);
 
-    
-    console.log(data);
-
-    return {...data, category: item.category};
+    return product;
 }
 
 const getOutfits = async () => {
@@ -80,8 +88,7 @@ const getOutfits = async () => {
     productList.innerHTML = '';
     starter.classList.remove('hidden');
 
-    currentOutfits.splice(0, currentOutfits.length);
-    currentDisplayedOutfits.splice(0, currentDisplayedOutfits.length);
+    currentOutfits = [];
 
     const response = await fetch('/openai/outfits', {
         method: 'POST',
@@ -102,11 +109,11 @@ const getOutfits = async () => {
     const data = await response.json();
     console.log(data);
     
+    starter.classList.add('hidden');
+
     for(let item of data.items) {
         const product = await getProduct(item);
-        starter.classList.add('hidden');
-        currentDisplayedOutfits.push(product);
-        currentOutfits.push(item);
+        currentOutfits.push(product);
     }
     
     loaderText.innerText = 'Finishing up...';
@@ -144,23 +151,35 @@ const sendPrompt = async () => {
     console.log(data);
     
     for(let item of data.items) {
-        if(item.status == -1) {
-            productList.removeChild(document.querySelector(`[data-product="${item.category}"]`));
-            const index = currentOutfits.findIndex(currentItem => currentItem.category == item.category);
-            currentOutfits.splice(index, 1);
-            currentDisplayedOutfits.splice(index, 1);
-        }
-        if(item.status == 0 || item.status == -1) continue;
-
         const product = await getProduct(item);
-        currentDisplayedOutfits.push(product);
-        currentOutfits.push(item);
+        currentOutfits.push(product);
     }
     
     loaderText.innerText = 'Finishing up...';
 
     loader.classList.add('hidden');
 }
+
+const deleteItem = (pid) => {
+    const index = currentOutfits.findIndex(outfit => outfit.pid == pid);
+    if(index != -1) currentOutfits.splice(index, 1);
+
+    productList.removeChild(document.querySelector(`[data-product="${pid}"]`));
+}
+
+productList.addEventListener('click', (ev) => {
+    const targets = ev.composedPath();
+
+    for(let target of targets) {
+        if(target.hasAttribute('data-product')) break;
+
+        if(target.hasAttribute('data-btn')) {
+            const pid = target.getAttribute('data-btn');
+            deleteItem(pid);
+            break;
+        }
+    }
+});
 
 promptSendBtn.addEventListener('click', (ev) => {
     sendPrompt();
@@ -191,13 +210,12 @@ const loadPage = (page) => {
     productList.innerHTML = '';
     pageTitle.innerText = page.title;
     
-    page.currentDisplayedOutfits?.length ? starter.classList.add('hidden') : starter.classList.remove('hidden'); 
+    page.currentOutfits?.length ? starter.classList.add('hidden') : starter.classList.remove('hidden'); 
 
     currentOutfits = JSON.parse(JSON.stringify(page.currentOutfits));
-    currentDisplayedOutfits = JSON.parse(JSON.stringify(page.currentDisplayedOutfits));
     
-    for(let item of page.currentDisplayedOutfits)
-        productList.insertAdjacentHTML("beforeend", productCard(item, item.category));
+    for(let item of page.currentOutfits)
+        productList.insertAdjacentHTML("beforeend", productCard(item));
 }
 
 const loadChats = () => {
@@ -206,10 +224,8 @@ const loadChats = () => {
 
 const saveOutfitData = () => {
     const pageIndex = localDB.pages.findIndex(page => page.pageStamp == localDB.currPageStamp);
-    if(pageIndex != -1) {
-        localDB.pages[pageIndex].currentDisplayedOutfits = JSON.parse(JSON.stringify(currentDisplayedOutfits));
+    if(pageIndex != -1)
         localDB.pages[pageIndex].currentOutfits = JSON.parse(JSON.stringify(currentOutfits));
-    }
 }
 
 
@@ -233,7 +249,6 @@ const addPage = async (title = "My Outfit") => {
     localDB.pages.splice(0, 0, {
         title,
         pageStamp,
-        currentDisplayedOutfits: [],
         currentOutfits: []
     })
     
@@ -248,7 +263,6 @@ const deletePage = (pageStamp) => {
     if(pageIndex != -1) localDB.pages.splice(pageIndex, 1);
     
     if(localDB.currPageStamp == pageStamp) {
-        currentDisplayedOutfits = [];
         currentOutfits = [];
     }
 

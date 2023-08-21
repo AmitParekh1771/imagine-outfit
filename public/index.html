@@ -12,8 +12,13 @@
 <body class="bg-gray-100 dark:bg-gray-900 flex items-stretch min-h-screen relative overflow-y-scroll">
 
     <!-- section -->
-    <section class="min-h-screen sticky left-0 top-0 z-30 bg-gray-200 dark:bg-gray-700 h-full p-8 w-72 overflow-y-auto">
-        <button id="add-chat-btn" class="p-3 bg-blue-500 text-white rounded-md mb-4 w-full">New Chat</button>
+    <section id="menu" class="min-h-screen lg:sticky fixed transition-all transform translate-x-[-100%] lg:translate-x-[0%] left-0 top-0 z-40 bg-gray-200 dark:bg-gray-700 h-full p-8 w-72 overflow-y-auto">
+        <div class="flex items-stretch gap-2 mb-4">
+            <button id="add-chat-btn" class="p-3 bg-blue-500 text-white rounded-md flex-grow">New Chat</button>
+            <button id="closeMenuBtn" class="p-3 border-2 border-current lg:hidden text-blue-500 rounded-md ">
+                <svg height="1em" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
         <div id="chatHistory" class="space-y-4">
             <!-- <div data-chat=""  class="p-3 rounded-md mb-2 hover:bg-gray-300 cursor-pointer">
                 <div class="flex justify-between items-center gap-1">
@@ -32,39 +37,54 @@
     
     <!-- section -->
     <section class="flex-grow min-h-screen relative flex flex-col">
+        <div class="px-[5%] flex-grow sticky top-0 z-30 bg-gray-100 dark:bg-gray-900">
+            <div class="max-w-screen-lg mx-auto py-4">
+                <div class="flex justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <button id="openMenuBtn" class="text-gray-700 dark:text-gray-200 lg:hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1.25em" viewBox="0 0 448 512" fill="currentColor"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
+                        </button>
+                        <h1 id="pageTitle" contenteditable="true" class="text-xl outline-none font-bold text-gray-700 dark:text-gray-200 whitespace-nowrap"></h1>
+                        
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <label for="darkModeToggle" class="flex gap-2 items-center cursor-pointer" title="Toggle theme">
+                            <div class="relative w-8 h-5 rounded-full bg-gray-300 dark:bg-gray-700">
+                                <input type="checkbox" id="darkModeToggle" class="hidden">
+                                <div id="toggleIndicator" class="absolute inset-1 w-3 h-3 transform translate-x-0 bg-white dark:bg-gray-400 rounded-full transition-transform duration-300 ease-in-out"></div>
+                            </div>
+                        </label>
+                        <button id="openPreferenceBtn" class="text-gray-700 dark:text-gray-200 md:hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1.25em" viewBox="0 0 512 512" fill="currentColor"><path d="M40 48C26.7 48 16 58.7 16 72v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V72c0-13.3-10.7-24-24-24H40zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zM16 232v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V232c0-13.3-10.7-24-24-24H40c-13.3 0-24 10.7-24 24zM40 368c-13.3 0-24 10.7-24 24v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V392c0-13.3-10.7-24-24-24H40z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="loader" class="max-w-screen-lg mx-auto py-4 flex justify-center items-center gap-2" role="status">
+                <svg aria-hidden="true" class="w-6 h-6 text-gray-200 animate-spin dark:text-gray-700 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                </svg>
+                <span id="loader-text" class="text-sm text-gray-700 dark:text-gray-200">Loading...</span>
+            </div>
+        </div>
         <div class="px-[5%] flex-grow relative">
             <div class="max-w-screen-lg mx-auto py-4">
-                <div class="flex justify-between">
-                    <div class="flex items-center gap-4">
-                        <h1 id="pageTitle" contenteditable="true" class="text-xl outline-none font-bold text-gray-700 dark:text-gray-200"></h1>
-                        <div id="loader" class="flex items-center gap-2" role="status">
-                            <svg aria-hidden="true" class="w-6 h-6 text-gray-200 animate-spin dark:text-gray-700 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-                            </svg>
-                            <span id="loader-text" class="text-sm text-gray-700 dark:text-gray-200">Loading...</span>
-                        </div>
-                    </div>
-                    <label for="darkModeToggle" class="flex gap-2 items-center cursor-pointer" title="Toggle theme">
-                        <div class="relative w-10 h-6 rounded-full bg-gray-300 dark:bg-gray-700">
-                            <input type="checkbox" id="darkModeToggle" class="hidden">
-                            <div id="toggleIndicator" class="absolute inset-1 w-4 h-4 transform translate-x-0 bg-white dark:bg-gray-400 rounded-full transition-transform duration-300 ease-in-out"></div>
-                        </div>
-                    </label>
-                </div>
-                
-                <div id="product-list" class="flex gap-4 mt-8 flex-wrap justify-center">
+
+                <div id="product-list" class="flex gap-4 flex-wrap justify-center">
                     <!-- Product Cards -->
-                    <!-- <div data-product="" class="bg-white dark:bg-gray-800 p-4 max-w-[240px] w-full rounded shadow-md">
-                        <img data-property="product-image" src="" alt="Product 1" class="w-full h-56 object-cover mb-2">
-                        <h3 data-property="product-title" class="text-gray-800 dark:text-gray-200 font-semibold">Product Title</h3>
+                    <!-- <div data-product="" class="relative bg-white dark:bg-gray-800 p-4 max-w-[240px] w-full rounded shadow-md group">
+                        <span data-property="product-category" class="absolute top-1 left-1 px-2 py-1 text-xs font-medium rounded bg-blue-500 text-white">Electronics</span>
+                        <button data-btn="${product.pid}" class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition duration-300 p-1 text-gray-800 dark:text-gray-200"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                        <a href="${product.productLink}" target="_blank"><img data-property="product-image" src="" alt="Product 1" class="w-full h-56 object-cover mb-2"></a>
+                        <h3 data-property="product-title" class="text-gray-800 dark:text-gray-200 font-semibold"><a href="${product.productLink}" target="_blank">Product Title</a></h3>
                         <p class="flex gap-2 text-green-600 dark:text-green-400 font-medium"><span data-property="product-mrp">$99.99</span><span data-property="product-original-mrp" class="text-gray-500 line-through">$129.99</span></p>
                         <p data-property="product-discount-percentage" class="text-sm text-gray-500 dark:text-gray-400">Save 23%</p>
                     </div> -->
                     <!-- Repeat for other product cards -->
                 </div>
 
-                <div id="starter" class="py-20 text-lg opacity-75 text-gray-700 dark:text-gray-100 max-w-lg mx-auto">
+                <div id="starter" class="py-16 text-lg opacity-75 text-gray-700 dark:text-gray-100 max-w-lg mx-auto">
                     <div class="mb-2 bg-gray-200 dark:bg-gray-800 rounded-md p-3"><strong>Step 1:</strong> Give your page a beautiful name (Click & Edit) 💫</div>
                     <div class="mb-2 bg-gray-200 dark:bg-gray-800 rounded-md p-3"><strong>Step 2:</strong> Choose your outfit preferences and Hit "Apply Changes" 🚀</div>
                     <div class="mb-2 bg-gray-200 dark:bg-gray-800 rounded-md p-3"><strong>Step 3:</strong> Use textbox to chat with AI and modify outfits the way you want 💪</div>
@@ -76,20 +96,27 @@
     
         <div class="px-[5%] sticky bottom-0 left-0 z-30 w-full bg-gradient-to-b from-transparent via-gray-200 dark:via-gray-800 to-gray-200 dark:to-gray-800">
             <div class="max-w-screen-md mx-auto flex items-end space-x-2 pb-8 pt-16">
-                <textarea id="promptBox" class="flex-grow p-3 rounded bg-white dark:bg-gray-600 resize-none max-h-[208px] overflow-y-auto" rows="1" placeholder="Type your message..."></textarea>
-                <button id="promptSendBtn" class="p-3 text-white bg-blue-500 rounded">Send</button>
+                <textarea id="promptBox" class="flex-grow p-3 rounded dark:text-white bg-white dark:bg-gray-600 resize-none max-h-[208px] overflow-y-auto outline-none" rows="1" placeholder="Type your message..."></textarea>
+                <button id="promptSendBtn" class="p-4 text-white bg-blue-500 rounded outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" fill="currentColor"><path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/></svg>
+                </button>
             </div>
         </div>
     </section>
     <!-- section -->
 
     <!-- section -->
-    <section class="min-h-screen sticky right-0 top-0 z-30 h-full bg-gray-200 dark:bg-gray-700 p-8 w-72">
-        <h2 class="text-lg font-semibold mb-4 dark:text-gray-300">Preferences</h2>
+    <section id="preference" class="min-h-screen md:sticky right-0 fixed transform translate-x-[100%] md:translate-x-[0%] transition-all top-0 z-40 h-full bg-gray-200 dark:bg-gray-700 p-8 w-72">
+        <div class="flex text-lg items-stretch gap-2 mb-4 dark:text-gray-300">
+            <h2 class="font-semibold flex-grow">Preferences</h2>
+            <button id="closePreferenceBtn" class="md:hidden">
+                <svg height="1em" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
         <form class="space-y-4">
             <div>
                 <label for="gender" class="block text-xs font-medium text-gray-700 dark:text-gray-300">Gender</label>
-                <select id="gender" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm">
+                <select id="gender" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm outline-none">
                     <option>Male</option>
                     <option>Female</option>
                     <option>Other</option>
@@ -97,11 +124,11 @@
             </div>
             <div>
                 <label for="age" class="block text-xs font-medium text-gray-700 dark:text-gray-300">Age</label>
-                <input type="text" id="age" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm">
+                <input type="text" id="age" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm outline-none">
             </div>
             <div>
                 <label for="occasion" class="block text-xs font-medium text-gray-700 dark:text-gray-300">Occasion</label>
-                <select id="occasion" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm">
+                <select id="occasion" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm outline-none">
                     <option>Casual</option>
                     <option>Lounge Wear</option>
                     <option>Festive</option>
@@ -114,11 +141,11 @@
             </div>
             <div>
                 <label for="location" class="block text-xs font-medium text-gray-700 dark:text-gray-300">Location</label>
-                <input type="text" id="location" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm">
+                <input type="text" id="location" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm outline-none">
             </div>
             <div>
                 <label for="color" class="block text-xs font-medium text-gray-700 dark:text-gray-300">Preferred Color</label>
-                <select id="color" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm">
+                <select id="color" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm outline-none">
                     <option>White</option>
                     <option>Black</option>
                     <option>Yellow</option>
@@ -130,7 +157,7 @@
             </div>
             <div>
                 <label for="pattern" class="block text-xs font-medium text-gray-700 dark:text-gray-300">Preferred Pattern</label>
-                <select id="pattern" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm">
+                <select id="pattern" class="mt-1 p-2 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm outline-none">
                     <option>Stripes</option>
                     <option>Polka Dots</option>
                     <option>Floral</option>
@@ -138,7 +165,7 @@
                 </select>
             </div>
             <div>
-                <button id="preferenceBtn" class="mt-4 p-3 text-white bg-blue-500 rounded w-full text-center">Apply Changes</button>
+                <button id="preferenceBtn" class="mt-4 p-3 text-white bg-blue-500 rounded w-full text-center outline-none">Apply Changes</button>
             </div>
         </form>
     </section>
