@@ -26,6 +26,7 @@ Welcome to the Fashion Outfit Generator web app! This project was developed as a
 ## Deployment
 
 The app is deployed using [render.com](https://render.com). You can access the live version at [https://imagine-outfit.onrender.com](https://imagine-outfit.onrender.com).
+Note: The live version isn't working as of Dec 31, 2023, due to the expiry of the OpenAI API key.
 
 ## Collaboration
 
